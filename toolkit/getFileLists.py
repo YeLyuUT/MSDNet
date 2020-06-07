@@ -40,6 +40,27 @@ def getTrainingDataList(data_home, useVal=True):
         for i, l in zip(all_img_path, all_lbl_path):
             f.write(i + ' ' + l + '\n')
 
+def getValidationDataList(data_home, target_dir):
+    test_home = osp.join(data_home, 'valid')
+    test_paths = os.listdir(test_home)
+
+    all_img_path = []
+    all_pred_path = []
+    for pd in test_paths:
+        img_dir = osp.join(test_home, pd, 'Images')
+        img_paths = os.listdir(img_dir)
+        pred_dir = osp.join(target_dir, pd, 'Labels')
+        for img_p in img_paths:
+            img_path = osp.abspath(osp.join(img_dir, img_p))
+            pred_path = osp.abspath(osp.join(pred_dir, img_p))
+            assert osp.exists(img_path)
+            all_img_path.append(img_path)
+            all_pred_path.append(pred_path)
+
+    with open('./fileListValid.txt', 'w') as f:
+        for i, l in zip(all_img_path, all_pred_path):
+            f.write(i + ' ' + l + '\n')
+
 def getTestingDataList(data_home, target_dir):
     test_home = osp.join(data_home, 'test')
     test_paths = os.listdir(test_home)
@@ -57,7 +78,7 @@ def getTestingDataList(data_home, target_dir):
             all_img_path.append(img_path)
             all_pred_path.append(pred_path)
 
-    with open('./fileListPred.txt', 'w') as f:
+    with open('./fileListTest.txt', 'w') as f:
         for i, l in zip(all_img_path, all_pred_path):
             f.write(i + ' ' + l + '\n')
 
@@ -76,4 +97,5 @@ if __name__ == '__main__':
     pred_home = args.p
     assert osp.isdir(data_home)
     getTrainingDataList(data_home, useVal = args.v)
-    getTestingDataList(data_home, pred_home)
+    getValidationDataList(data_home, pred_home+'_valid')
+    getTestingDataList(data_home, pred_home+'_test')
