@@ -2,14 +2,14 @@ import numpy as np
 class UAVImageColorEncoder:
   def __init__(self):
     # color table.
-    self.clr_tab = self.ColorTable()
+    self.clr_tab = self.createColorTable()
     # id table.
     id_tab = {}
     for k, v in self.clr_tab.items():
         id_tab[k] = self.clr2id(v)
     self.id_tab = id_tab
 
-  def ColorTable(self):
+  def createColorTable(self):
     clr_tab = {}
     clr_tab['Cluster'] = [0, 0, 0]
     clr_tab['Building'] = [128, 0, 0]
