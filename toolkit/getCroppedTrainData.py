@@ -22,6 +22,5 @@ if __name__=='__main__':
 			imgPath,lblPath = line.split()
 			imgList.append(imgPath)
 			lblList.append(lblPath)
-			break
 	print(imgList, lblList)
 	splitImagesIntoN(imgList,lblList,size=[1024,1024],ref_sp=[768,768],save_dir = save_dir)
