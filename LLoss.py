@@ -17,16 +17,16 @@ def tf_sparse_softmax_cross_entropy_with_logits(y_logits,y_true,ignore_label,los
   loss =tf.reduce_mean(cross_entropy)
   return loss
 
-def multiscale_sparse_softmax_cross_entropy_with_logits(y_logits_list,y_true_list,class_num,loss_weights=[1,1,1],ignore_label=255,loss_weight=1.0,loss_focus=False):
+def multiscale_sparse_softmax_cross_entropy_with_logits(y_logits_list,y_true_list,class_num,loss_weights=[1,1,1],ignore_label=255,loss_weight=1.0):
   loss_list=[]
   for idx in range(len(y_logits_list)):
-    loss = sparse_softmax_cross_entropy_with_logits(y_logits_list[idx],y_true_list[idx],class_num,ignore_label,loss_weight,loss_focus)*loss_weights[idx]/3.0
+    loss = sparse_softmax_cross_entropy_with_logits(y_logits_list[idx],y_true_list[idx],class_num,ignore_label,loss_weight)*loss_weights[idx]/3.0
     loss_list.append(loss)
   total_loss = tf.add_n(loss_list)
   return total_loss
 
 
-def sparse_softmax_cross_entropy_with_logits(y_logits,y_true,class_num,ignore_label,loss_weight,loss_focus=False):
+def sparse_softmax_cross_entropy_with_logits(y_logits,y_true,class_num,ignore_label,loss_weight):
   with tf.variable_scope('loss_sparse_softmax_cross_entropy_with_logits'):
     #class_weights = tf.constant(np.array([1,1,1,1,1,1]),dtype=tf.float32)
     not_ignore_mask = tf.to_float(tf.not_equal(y_true,ignore_label)) * loss_weight

@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 from LLayer import *
 from LLoss import *
 from LMetric import *
@@ -29,28 +28,22 @@ def FCN8sMultiScale(H,W,ClassNum,train=True):
     X = Conv2DMultiScale(Input_list,ksize=3,stride=1,o_c=64,use_relu=True,concat=False,separate_towers=True,name='Conv1_1')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=64,use_relu=True,separate_towers=True,name='Conv1_2')
     Pool1 = MaxPooling2DMultiScale(X,ksize=2,stride=2,name='Pool1')
-    #Pool1 = Conv2DMultiScale(X,ksize=4,stride=2,o_c=64,use_relu=True,separate_towers=True,name='Pool1')
     #2
     X = Conv2DMultiScale(Pool1,ksize=3,stride=1,o_c=128,use_relu=True,concat=False,separate_towers=True,name='Conv2_1')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=128,use_relu=True,separate_towers=True,name='Conv2_2')
     Pool2 = MaxPooling2DMultiScale(X,ksize=2,stride=2,name='Pool2')
-    #Pool2 = Conv2DMultiScale(X,ksize=4,stride=2,o_c=128,use_relu=True,separate_towers=True,name='Pool2')
     #3
     #padding_list = [[[0,1],[0,0]],[[0,0],[0,0]]]
     X = Conv2DMultiScale(Pool2,ksize=3,stride=1,o_c=128,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='Conv3_1')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=128,use_relu=True,padding_list=padding_list,separate_towers=True,name='Conv3_2')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=128,use_relu=True,padding_list=padding_list,separate_towers=True,name='Conv3_3')
     Pool3 = MaxPooling2DMultiScale(X,ksize=2,stride=2,name='Pool3')
-    #Pool3 = Conv2DMultiScale(X,ksize=4,stride=2,o_c=256,use_relu=True,separate_towers=True,name='Pool3')
-
     #4
     #padding_list = [[[0,0],[0,0]],[[0,1],[0,0]]]
     X = Conv2DMultiScale(Pool3,ksize=3,stride=1,o_c=256,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='Conv4_1')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=256,use_relu=True,padding_list=padding_list,separate_towers=True,name='Conv4_2')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=256,use_relu=True,padding_list=padding_list,separate_towers=True,name='Conv4_3')
     Pool4 = MaxPooling2DMultiScale(X,ksize=2,stride=2,name='Pool4')
-    #Pool4 = Conv2DMultiScale(X,ksize=4,stride=2,o_c=512,use_relu=True,separate_towers=True,name='Pool4')
-    
     #5
     X = Conv2DMultiScale(Pool4,ksize=3,stride=1,o_c=256,use_relu=True,concat=False,separate_towers=True,name='Conv5_1')
     X = Conv2DMultiScale(X,ksize=3,stride=1,o_c=256,use_relu=True,separate_towers=True,name='Conv5_2')
@@ -58,15 +51,10 @@ def FCN8sMultiScale(H,W,ClassNum,train=True):
 
     #padding_list = [[[0,1],[0,0]],[[0,0],[0,0]]]
     X = Conv2DMultiScale(X_Conv5,ksize=3,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='FC6')
-    #X = Conv2DMultiScale(X,ksize=1,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='FC6_2')
-    #X = Conv2DMultiScale(X,ksize=1,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='FC6')
-    
-    #if train==True:
-    #    X = DropoutMultiScale(X,keep_prob=0.5,name='Drop6')
+
+    if train==True:
+        X = DropoutMultiScale(X,keep_prob=0.5,name='Drop6')
     X = Conv2DMultiScale(X,ksize=1,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=True,separate_towers=False,name='FC7')
-    #X = Conv2DMultiScale(X,ksize=1,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='FC7_1')
-    #X = Conv2DMultiScale(X,ksize=1,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='FC7_2')
-    #X = Conv2DMultiScale(X,ksize=1,stride=1,o_c=1024,use_relu=True,padding_list=padding_list,concat=False,separate_towers=True,name='FC7_3')
     
     net.pretrain_variables = net.get_Trainable_Variables()
 

@@ -22,7 +22,6 @@ def accuracy_multiscale(y_pred_list,y_true_list,ignore_label=255):
 def accuracy_for_all(y_pred,y_true,ClassNum):
   #first classNum accuracies are for each class
   #last accuracy is for total accuracy
-  #TODO fix this..
   accuracies = []
   print('y_true',y_true.get_shape().as_list())
   with tf.name_scope('accuracy_for_all'):

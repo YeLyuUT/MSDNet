@@ -4,6 +4,7 @@ from LLoss import *
 from LMetric import *
 from LNet import *
 from LSummary import *
+from LSolverOptions import *
 import LDataInput
 import sys
 import multiprocessing
@@ -30,7 +31,7 @@ solver_opt_train.base_lr = 1e-5 # start learning rate.
 solver_opt_train.weight_decay = 1e-5 # weight decay.
 solver_opt_train.snapshot = 4350 # number of iterations to save model weights.
 solver_opt_train.batch_size = 1 # batch size of 1, input larger image crop instead of larger batch.
-solver_opt_train.epoch = 10 # training epochs.
+solver_opt_train.epoch = 40 # training epochs.
 solver_opt_train.stepsize = 4350 * solver_opt_train.epoch / 55 # learning rate exponentially scale to 0.1*base_lr
 solver_opt_train.snapshow_prefix = './checkpoints'
 solver_opt_train.summary_dir = os.path.join(solver_opt_train.snapshow_prefix, 'summary')
@@ -55,7 +56,7 @@ def train_net(fileListPath,solver_opt,use_restore=False,restore_path=''):
       logits = net.get_Logits()
       net.build_y_true_list()
       #define loss and metric
-      loss = multiscale_sparse_softmax_cross_entropy_with_logits(y_logits_list=logits,y_true_list=net.get_y_true_list(),class_num=ClassNum,loss_weights=loss_weights,ignore_label=255,loss_weight=1.0,loss_focus=False)
+      loss = multiscale_sparse_softmax_cross_entropy_with_logits(y_logits_list=logits,y_true_list=net.get_y_true_list(),class_num=ClassNum,loss_weights=loss_weights,ignore_label=255,loss_weight=1.0)
       metric = accuracy_multiscale(net.get_Prediction_list(),net.get_y_true_list())
       net.Compile(loss,metric,solver_opt, restore_params = use_restore, restorePath=restore_path)
       fileList = LDataInput.getPairFileLists(fileListPath)
@@ -65,6 +66,15 @@ def train_net(fileListPath,solver_opt,use_restore=False,restore_path=''):
       net.fit_generator(gen)
   except Exception as e:
     print(e)
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    traceback_details = {
+      'filename': exc_traceback.tb_frame.f_code.co_filename,
+      'lineno': exc_traceback.tb_lineno,
+      'name': exc_traceback.tb_frame.f_code.co_name,
+      'type': exc_type.__name__,
+      'message': exc_value,  # or see traceback._some_str()
+    }
+    print(traceback_details)
     print('ExceptHook, terminate all child processes!')
     for p in multiprocessing.active_children():
        p.terminate()
@@ -93,6 +103,15 @@ def train_net_with_pretrain_model(fileListPath,solver_opt,pretrain_model_restore
       net.fit_generator(gen)
   except Exception as e:
     print(e)
+    exc_type, exc_value, exc_traceback = sys.exc_info()
+    traceback_details = {
+      'filename': exc_traceback.tb_frame.f_code.co_filename,
+      'lineno': exc_traceback.tb_lineno,
+      'name': exc_traceback.tb_frame.f_code.co_name,
+      'type': exc_type.__name__,
+      'message': exc_value,  # or see traceback._some_str()
+    }
+    print(traceback_details)
     print('ExceptHook, terminate all child processes!')
     for p in multiprocessing.active_children():
        p.terminate()
