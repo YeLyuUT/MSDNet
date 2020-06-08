@@ -293,11 +293,6 @@ class Net():
       try:
         for X,Y in generator.generate():
           batchNum = self.sess.run(self.global_step)
-          #print('BatchNum:',batchNum)
-          #print('X.shape:',X.shape)
-          #print('X.type:',X.dtype)
-          #print('Y.shape:',Y.shape)
-          #print('Y.type:',Y.dtype)
           rtvs = self.sess.run([self.loss,self.metrics,self.lr,self.train_op],feed_dict={self.Input:X,self.Input_Y:Y})
           print("batch:%d, loss:%f,lr:%f,accuracy:"%(batchNum,rtvs[0],rtvs[2]),rtvs[1])
           loss_list.append(rtvs[0])
@@ -318,7 +313,6 @@ class Net():
           pickle.dump([loss_list,accuracy_list],f,pickle.HIGHEST_PROTOCOL)
       except Exception as e:
         print("Graph Running Error!")
-        print(e)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback_details = {
          'filename': exc_traceback.tb_frame.f_code.co_filename,

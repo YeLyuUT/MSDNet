@@ -4,9 +4,6 @@ from LLoss import *
 from LMetric import *
 from LNet import *
 
-#H: height
-#W: width
-#ClassNum: number of predicted classes 
 def FCN8sMultiScale(H,W,ClassNum,train=True):
   net = Net('FCN8sMultiScale')
   with net.Graph.as_default():

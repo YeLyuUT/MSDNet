@@ -60,19 +60,15 @@ def splitImagesIntoN(imgList,lblList,size,ref_sp,save_dir):
           if i!=n_h-1 and j!=n_w-1:
             _img = img[sp_h*i:sp_h*i+size_h,sp_w*j:sp_w*j+size_w]
             _lbl = lbl[sp_h*i:sp_h*i+size_h,sp_w*j:sp_w*j+size_w]
-            #print('1',[sp_h*i,sp_h*i+size_h,sp_w*j,sp_w*j+size_w])
           elif i!=n_h-1 and j==n_w-1:
             _img = img[sp_h*i:sp_h*i+size_h,w-size_w:w]
             _lbl = lbl[sp_h*i:sp_h*i+size_h,w-size_w:w]
-            #print('2',[sp_h*i,sp_h*i+size_h,w-size_w,w])
           elif i==n_h-1 and j!=n_w-1:
             _img = img[h-size_h:h,sp_w*j:sp_w*j+size_w]
             _lbl = lbl[h-size_h:h,sp_w*j:sp_w*j+size_w]
-            #print('3',[h-size_h,h,sp_w*j,sp_w*j+size_w])
           else:
             _img = img[h-size_h:h,w-size_w:w]
             _lbl = lbl[h-size_h:h,w-size_w:w]
-            #print('4',[h-size_h,h,w-size_w,w])
 
           path_img = os.path.join(save_dir,prefix+'_%i_%i.'%(i,j)+imgExt)
           path_lbl = os.path.join(save_dir,prefix+'TrainId_%i_%i.'%(i,j)+lblExt)

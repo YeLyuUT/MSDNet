@@ -1,5 +1,3 @@
-import sys
-import os
 from CropImageToSize import splitImagesIntoN
 import argparse
 

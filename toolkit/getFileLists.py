@@ -1,4 +1,3 @@
-import sys
 import os
 import os.path as osp
 import argparse
@@ -84,7 +83,6 @@ def getTestingDataList(data_home, target_dir):
 
 def parse_args(description='Prepare file lists.'):
     parser = argparse.ArgumentParser(description=description)
-    # general
     parser.add_argument('-u', help='UAVid home directory', type=str, default = './data/uavid')
     parser.add_argument('-p', help='prediction home directory', type=str, default='./output/pred')
     parser.add_argument('-v', help='Add validation set to fileListTrain.txt', action='store_true')

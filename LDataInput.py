@@ -1,5 +1,3 @@
-import sys
-import os 
 import PIL
 import numpy as np
 import multiprocessing as mp

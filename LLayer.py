@@ -205,8 +205,6 @@ def DeConv2DMultiScale(bottom_list,ksize,stride,o_c,top_sp_list,usebias=False,na
   if padding_list is None:
     padding_list = [[[0,0],[0,0]]]*(len(bottom_list)-1)
   top_list=[]
-  top_list=[]
-  top_list_tmp=[]
   with tf.variable_scope(name):
     for idx in range(len(bottom_list)):
       with tf.variable_scope('scale_%i'%(idx)):

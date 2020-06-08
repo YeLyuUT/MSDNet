@@ -44,12 +44,21 @@ solver_opt_test.summary_dir = os.path.join(solver_opt_test.snapshow_prefix, 'sum
 ###### Define Network. #####
 TheNet = FCN8sMultiScale(H,W,ClassNum, train=True)
 
+def trace_back():
+  exc_type, exc_value, exc_traceback = sys.exc_info()
+  traceback_details = {
+    'filename': exc_traceback.tb_frame.f_code.co_filename,
+    'lineno': exc_traceback.tb_lineno,
+    'name': exc_traceback.tb_frame.f_code.co_name,
+    'type': exc_type.__name__,
+    'message': exc_value,  # or see traceback._some_str()
+  }
+  print(traceback_details)
+  for p in multiprocessing.active_children():
+    p.terminate()
+
 def train_net(fileListPath,solver_opt,use_restore=False,restore_path=''):
   try:
-    H = 1024
-    W = 1024
-    ClassNum = 8#final output feature channels
-    
     net = TheNet
     with net.Graph.as_default():
       Input_X = net.get_Input()
@@ -65,27 +74,10 @@ def train_net(fileListPath,solver_opt,use_restore=False,restore_path=''):
       gen.set_label_encoder(UAVImageColorEncoder())
       net.fit_generator(gen)
   except Exception as e:
-    print(e)
-    exc_type, exc_value, exc_traceback = sys.exc_info()
-    traceback_details = {
-      'filename': exc_traceback.tb_frame.f_code.co_filename,
-      'lineno': exc_traceback.tb_lineno,
-      'name': exc_traceback.tb_frame.f_code.co_name,
-      'type': exc_type.__name__,
-      'message': exc_value,  # or see traceback._some_str()
-    }
-    print(traceback_details)
-    print('ExceptHook, terminate all child processes!')
-    for p in multiprocessing.active_children():
-       p.terminate()
+    trace_back()
 
 def train_net_with_pretrain_model(fileListPath,solver_opt,pretrain_model_restore_path):
   try:
-    H = 1024
-    W = 1024
-    #W = 2048
-    ClassNum = 8#final output feature channels
-    
     net = TheNet
     with net.Graph.as_default():
       Input_X = net.get_Input()
@@ -102,27 +94,10 @@ def train_net_with_pretrain_model(fileListPath,solver_opt,pretrain_model_restore
       gen.set_label_encoder(UAVImageColorEncoder())
       net.fit_generator(gen)
   except Exception as e:
-    print(e)
-    exc_type, exc_value, exc_traceback = sys.exc_info()
-    traceback_details = {
-      'filename': exc_traceback.tb_frame.f_code.co_filename,
-      'lineno': exc_traceback.tb_lineno,
-      'name': exc_traceback.tb_frame.f_code.co_name,
-      'type': exc_type.__name__,
-      'message': exc_value,  # or see traceback._some_str()
-    }
-    print(traceback_details)
-    print('ExceptHook, terminate all child processes!')
-    for p in multiprocessing.active_children():
-       p.terminate()
+    trace_back()
 
 def predict_net_for_big_image(fileListPath,item_num_per_line_in_txt,solver_opt,save_dir_path,restorePath='',output_colorLabel=False):
   try:
-    #specify the net structure that to be used
-    H = 1024
-    W = 1024
-    ClassNum = 8#final output feature channels
-    
     net = TheNet
     clr_encoder = UAVImageColorEncoder()
     with net.Graph.as_default():
@@ -151,8 +126,7 @@ def predict_net_for_big_image(fileListPath,item_num_per_line_in_txt,solver_opt,s
         print("w,h:",w,h)
         n_w = (w-1)//sp_ref+1
         n_h = (h-1)//sp_ref+1
-        print('n_w is:%i'%(n_w))
-        print('n_h is:%i'%(n_h))
+        print('number_sub_img:%i'%(n_w*n_h))
         if n_w>1:
           sp_w = (w-imgsize)//(n_w-1)
         else:
@@ -206,19 +180,7 @@ def predict_net_for_big_image(fileListPath,item_num_per_line_in_txt,solver_opt,s
       print('Prediction finished.')
 
   except Exception as e:
-    print(e)
-    exc_type, exc_value, exc_traceback = sys.exc_info()
-    traceback_details = {
-     'filename': exc_traceback.tb_frame.f_code.co_filename,
-     'lineno'  : exc_traceback.tb_lineno,
-     'name'    : exc_traceback.tb_frame.f_code.co_name,
-     'type'    : exc_type.__name__,
-     'message' : exc_value, # or see traceback._some_str()
-    }
-    print(traceback_details)
-    print('ExceptHook, terminate all child processes!')
-    for p in multiprocessing.active_children():
-      p.terminate()
+    trace_back()
 
 def checkCreateDirectory(dirpath):
   if not osp.isdir(dirpath):
@@ -228,8 +190,6 @@ def checkCreateDirectory(dirpath):
   return True
 
 def train(fileListPath,restore_path=None):
-  #fileListPath = '/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Dataset/UAVid/tmpTrainData/image_label_pair.txt'
-  #restore_path='/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Proj_ICRA/trn_ms_ft/model.ckpt'
   solver_opt = solver_opt_train
   checkCreateDirectory(solver_opt.snapshow_prefix)
   solver_opt.summary_dir = os.path.join(solver_opt.snapshow_prefix,'summary')
@@ -239,8 +199,6 @@ def train(fileListPath,restore_path=None):
     train_net(fileListPath, solver_opt, use_restore=False, restore_path=restore_path)
 
 def train_with_pretrain(fileListPath, restore_path):
-  #fileListPath = '/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Dataset/UAVid/tmpTrainData/image_label_pair.txt'
-  #pretrain_model_restore_path='/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Proj_ICRA/prt_trn_ms/saveV20/model.ckpt'
   assert restore_path is not None, 'restore_path is empty'
   solver_opt = solver_opt_train
   checkCreateDirectory(solver_opt.snapshow_prefix)
@@ -248,17 +206,12 @@ def train_with_pretrain(fileListPath, restore_path):
   train_net_with_pretrain_model(fileListPath,solver_opt, pretrain_model_restore_path=restore_path)
 
 def predict_for_big_image(fileListPath,restore_path,pred_dir = './output'):
-  #fileListPath = '/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Dataset/UAVid/tmpTrainData/test_pred_pair.txt'
-  #pred_dir = '/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Proj_ICRA/dummy_ms/predict',#prediction save directory
-  #restore_path = '/media/yelyu/18339a64-762e-4258-a609-c0851cd8163e/YeLyu/Proj_ICRA/trn_ms_ft1/model.ckpt',#-165300restore file path  eg:'/home/yelyu/Work/MyDLSolutions/MyTFLibrary/snapshot/model.ckpt-239'
   assert restore_path is not None, 'restore_path is empty'
   solver_opt = solver_opt_test
   predict_net_for_big_image(fileListPath,2,solver_opt,pred_dir,restore_path,output_colorLabel = True)
 
-
 def parse_args(description='MSD Main'):
   parser = argparse.ArgumentParser(description=description)
-  # general
   parser.add_argument('-m',
                       help='type of main script to run. '
                            '"t" for train. '

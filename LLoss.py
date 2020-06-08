@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 import LLayer
 
 def tf_multiscale_sparse_softmax_cross_entropy_with_logits(y_logits_list,y_true_list,loss_weights=[0.7,1.0,1.3],ignore_label=255,loss_weight=1.0):
@@ -28,7 +27,6 @@ def multiscale_sparse_softmax_cross_entropy_with_logits(y_logits_list,y_true_lis
 
 def sparse_softmax_cross_entropy_with_logits(y_logits,y_true,class_num,ignore_label,loss_weight):
   with tf.variable_scope('loss_sparse_softmax_cross_entropy_with_logits'):
-    #class_weights = tf.constant(np.array([1,1,1,1,1,1]),dtype=tf.float32)
     not_ignore_mask = tf.to_float(tf.not_equal(y_true,ignore_label)) * loss_weight
     y_one_hot = tf.one_hot(y_true,depth=class_num,axis=-1,dtype=tf.float32)
     q = tf.nn.softmax(y_logits,dim=-1)
