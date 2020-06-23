@@ -51,7 +51,7 @@ Link: https://www.tensorflow.org/install/pip?lang=python2
 
 ##### Pretrained model
 
-We offer the pretrained weights in the google drive link below, which should give 57% mIoU score on the UAVid2020 benchmark.
+We offer the pretrained weights in the google drive link below, which should give 57.0% mIoU score on the UAVid2020 benchmark.
 
 https://drive.google.com/drive/folders/1TzWeAu9Kb3Eqh3Y2YdyZ-3g4_zJinhvA?usp=sharing
 
