@@ -7,11 +7,16 @@ for the UAVid dataset.
 
 ### Preparation
 
-First, go to the MSDNet folder.
+First, clone the repository and go to the MSDNet folder.
 
-```cd <path to MSDNet folder>```
+```git clone https://github.com/YeLyuUT/MSDNet.git```
+
+```cd MSDNet```
 
 ##### Add UAVid dataset to data folder
+
+```mkdir data```
+
 ```ln -s <path to UAVid dataset> data/uavid```
 
 ##### Initialization (Create the folders and txt files)
