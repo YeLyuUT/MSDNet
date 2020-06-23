@@ -31,7 +31,7 @@ solver_opt_train.base_lr = 1e-5 # start learning rate.
 solver_opt_train.weight_decay = 1e-5 # weight decay.
 solver_opt_train.snapshot = 4350 # number of iterations to save model weights.
 solver_opt_train.batch_size = 1 # batch size of 1, input larger image crop instead of larger batch.
-solver_opt_train.epoch = 40 # training epochs.
+solver_opt_train.epoch = 120 # training epochs.
 solver_opt_train.stepsize = 4350 * solver_opt_train.epoch / 55 # learning rate exponentially scale to 0.1*base_lr
 solver_opt_train.snapshow_prefix = './checkpoints'
 solver_opt_train.summary_dir = os.path.join(solver_opt_train.snapshow_prefix, 'summary')
@@ -44,18 +44,7 @@ solver_opt_test.summary_dir = os.path.join(solver_opt_test.snapshow_prefix, 'sum
 ###### Define Network. #####
 TheNet = FCN8sMultiScale(H,W,ClassNum, train=True)
 
-def trace_back():
-  exc_type, exc_value, exc_traceback = sys.exc_info()
-  traceback_details = {
-    'filename': exc_traceback.tb_frame.f_code.co_filename,
-    'lineno': exc_traceback.tb_lineno,
-    'name': exc_traceback.tb_frame.f_code.co_name,
-    'type': exc_type.__name__,
-    'message': exc_value,  # or see traceback._some_str()
-  }
-  print(traceback_details)
-  for p in multiprocessing.active_children():
-    p.terminate()
+
 
 def train_net(fileListPath,solver_opt,use_restore=False,restore_path=''):
   try:
@@ -163,19 +152,14 @@ def predict_net_for_big_image(fileListPath,item_num_per_line_in_txt,solver_opt,s
         if item_num_per_line_in_txt==1:
           bname = os.path.basename(fileList[idx])
           checkCreateDirectory(save_dir_path)
-          filepathname = os.path.join(save_dir_path,bname)
-          print('save:',filepathname)
-          PIL.Image.fromarray(outImg.astype(np.uint8)).save(filepathname)
+          filepathname = os.path.join(save_dir_path, bname)
         if item_num_per_line_in_txt==2:
           filepathname = predList[idx]
-          print('save:',filepathname)
-          checkCreateDirectory(osp.dirname(filepathname))
-          PIL.Image.fromarray(outImg.astype(np.uint8)).save(filepathname)
         if item_num_per_line_in_txt==3:
           filepathname = predList[idx]
-          print('save:',filepathname)
-          checkCreateDirectory(osp.dirname(filepathname))
-          PIL.Image.fromarray(outImg.astype(np.uint8)).save(filepathname)
+        print('save:', filepathname)
+        checkCreateDirectory(osp.dirname(filepathname))
+        PIL.Image.fromarray(outImg.astype(np.uint8)).save(filepathname)
         idx+=1
       print('Prediction finished.')
 
@@ -208,12 +192,25 @@ def train_with_pretrain(fileListPath, restore_path):
 def predict_for_big_image(fileListPath,restore_path,pred_dir = './output'):
   assert restore_path is not None, 'restore_path is empty'
   solver_opt = solver_opt_test
-  predict_net_for_big_image(fileListPath,2,solver_opt,pred_dir,restore_path,output_colorLabel = True)
+  predict_net_for_big_image(fileListPath, 2, solver_opt, pred_dir, restore_path, output_colorLabel = True)
+
+def trace_back():
+  exc_type, exc_value, exc_traceback = sys.exc_info()
+  traceback_details = {
+    'filename': exc_traceback.tb_frame.f_code.co_filename,
+    'lineno': exc_traceback.tb_lineno,
+    'name': exc_traceback.tb_frame.f_code.co_name,
+    'type': exc_type.__name__,
+    'message': exc_value,  # or see traceback._some_str()
+  }
+  print(traceback_details)
+  for p in multiprocessing.active_children():
+    p.terminate()
 
 def parse_args(description='MSD Main'):
   parser = argparse.ArgumentParser(description=description)
   parser.add_argument('-m',
-                      help='type of main script to run. '
+                      help='Mode type. '
                            '"t" for train. '
                            '"tp for train with pre-trained model". '
                            '"p" for prediction',
