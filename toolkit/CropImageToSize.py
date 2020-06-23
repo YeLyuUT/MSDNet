@@ -8,7 +8,7 @@ clr_enc = UAVImageColorEncoder()
 def splitImagesIntoN(imgList,lblList,size,ref_sp,save_dir):
   '''
   size: int or [cropSizeH,cropSizeW]
-  ref_sp: reference space between each crop, int or [refH,refW]
+  ref_sp: reference space between crops, int or [refH,refW]. The space will be adjusted so the crops are evenly distributed.
   '''
 
   assert(len(imgList)==len(lblList))
